@@ -128,5 +128,32 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
 
     }
 
+    [HttpDelete]
+    [Route("{id:Guid}")]
+
+    public IActionResult delete([FromRoute] Guid id)
+    {
+        Region? regionDomainModel = dbContext.Regions.Find(id);
+
+        if (regionDomainModel == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Regions.Remove(regionDomainModel);
+        dbContext.SaveChanges();
+
+        // Map Domain Model --> DTO
+        DeleteRegionRequestDto deleteRegionRequestDto = new()
+        {
+            Id = regionDomainModel.Id,
+            Name = regionDomainModel.Name,
+            Code = regionDomainModel.Code,
+            RegionImageUrl = regionDomainModel.RegionImageUrl,
+        };
+
+        return Ok(deleteRegionRequestDto);
+    }
+
 
 }
