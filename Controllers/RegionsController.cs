@@ -1,24 +1,27 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NZwalker.Data;
 using NZwalker.Models.Domain;
 using NZwalker.Models.DTO;
+using NZwalker.Repositories.IRepo;
 
 namespace NZwalker.Controller;
 
 [Route("api/[Controller]")]
 [ApiController]
 
-public class RegionController(NZWalksDbContext dbContext) : ControllerBase
+public class RegionController(NZWalksDbContext dbContext, IRegionRepository regionRepository) : ControllerBase
 {
 
     private readonly NZWalksDbContext dbContext = dbContext;
+    private readonly IRegionRepository regionRepository = regionRepository;
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
         // Get data from Database - Domain Model
-        var regionsDomain = dbContext.Regions.ToList();
+        var regionsDomain = await regionRepository.GetAllAsync();
 
         // Map Domain model to DTO
         List<RegionDto> regionsDto = [];
@@ -42,11 +45,11 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
 
     [HttpGet]
     [Route("{id:Guid}")]
-    public IActionResult GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
 
         // Get data from Database - Domain Model
-        Region? regionByIdDomain = dbContext.Regions.Find(id);
+        Region? regionByIdDomain = await regionRepository.GetById(id);
 
         // Check if it is 
         if (regionByIdDomain == null)
@@ -68,7 +71,7 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto)
+    public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
     {
         // Map Dto --> Domain model
         Region regionDomainModel = new()
@@ -79,8 +82,8 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
         };
 
         // Domain Model to create Region
-        dbContext.Regions.Add(regionDomainModel);
-        dbContext.SaveChanges();
+        await dbContext.Regions.AddAsync(regionDomainModel);
+        await dbContext.SaveChangesAsync();
 
 
         // Map Domain model --> DTO
@@ -97,10 +100,10 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
 
     [HttpPut]
     [Route("{id:Guid}")]
-    public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
     {
         // check if the region is exist 
-        Region? regionByIdDomain = dbContext.Regions.Find(id);
+        Region? regionByIdDomain = await dbContext.Regions.FindAsync(id);
         if (regionByIdDomain == null)
         {
             return NotFound();
@@ -113,7 +116,7 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
         regionByIdDomain.Name = updateRegionRequestDto.Name;
         regionByIdDomain.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
 
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
 
         // Map Domain model --> DTO
         RegionDto regionDto = new()
@@ -131,9 +134,9 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
     [HttpDelete]
     [Route("{id:Guid}")]
 
-    public IActionResult delete([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        Region? regionDomainModel = dbContext.Regions.Find(id);
+        Region? regionDomainModel = await dbContext.Regions.FindAsync(id);
 
         if (regionDomainModel == null)
         {
@@ -141,7 +144,7 @@ public class RegionController(NZWalksDbContext dbContext) : ControllerBase
         }
 
         dbContext.Regions.Remove(regionDomainModel);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
 
         // Map Domain Model --> DTO
         DeleteRegionRequestDto deleteRegionRequestDto = new()
