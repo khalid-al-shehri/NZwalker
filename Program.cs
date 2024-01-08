@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NZwalker.Data;
+using NZwalker.Models.AutoMapper;
 using NZwalker.Repositories.IRepo;
 using NZwalker.Repositories.SQLRepo;
 
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<NZWalksDbContext>(options =>
 );
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 

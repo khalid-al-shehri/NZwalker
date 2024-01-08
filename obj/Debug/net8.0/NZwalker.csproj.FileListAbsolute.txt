@@ -136,3 +136,5 @@
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/obj/Debug/net8.0/NZwalker.pdb
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/obj/Debug/net8.0/NZwalker.genruntimeconfig.cache
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/obj/Debug/net8.0/ref/NZwalker.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/AutoMapper.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
