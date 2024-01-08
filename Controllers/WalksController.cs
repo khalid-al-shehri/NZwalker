@@ -32,6 +32,24 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
     }
 
+    [Route("{id:Guid}")]
+    [HttpGet]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        Walks? WalksById = await walksRepository.GetById(id);
+
+        if(WalksById == null){
+            return NotFound();
+        }
+
+        // Map domain Model --> DTO
+        WalksDTO walkByIdDTO = mapper.Map<WalksDTO>(WalksById);
+
+        return Ok(walkByIdDTO);
+
+    }
+
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddWalksDTO addWalksDTO)
     {
@@ -48,4 +66,18 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
     }
 
+    [Route("{id:Guid}")]
+    [HttpPut]
+    public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateWalksDTO updateWalksDTO){
+        Walks? updateExistingWalk = await walksRepository.Update(id, updateWalksDTO);
+
+        if(updateExistingWalk == null){
+            return NotFound();
+        }
+
+        WalksDTO updatedWalkDTO = mapper.Map<WalksDTO>(updateExistingWalk);
+
+        return Ok(updatedWalkDTO);
+
+    }
 }

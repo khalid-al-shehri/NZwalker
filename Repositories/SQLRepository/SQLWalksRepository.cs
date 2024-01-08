@@ -19,4 +19,42 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
     public async Task<List<Walks>?> GetAll(){
         return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
     }
+    
+    public async Task<Walks?> GetById(Guid id){
+        return await dbContext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<Walks?> Update(Guid id, UpdateWalksDTO updateWalksDTO){
+        Walks? existingWalk = await dbContext.Walks.FindAsync(id);
+
+        if(existingWalk == null){
+            return null;
+        }
+
+        if(updateWalksDTO.Name != null){
+            existingWalk.Name = updateWalksDTO.Name;
+        }
+        if(updateWalksDTO.Description != null){
+            existingWalk.Description = updateWalksDTO.Description;
+        }
+        if(updateWalksDTO.WalkImageUrl != null){
+            existingWalk.WalkImageUrl = updateWalksDTO.WalkImageUrl;
+        }
+        if(updateWalksDTO.DifficultyId != null){
+            existingWalk.DifficultyId = (Guid)updateWalksDTO.DifficultyId;
+        }
+        if(updateWalksDTO.RegionId != null){
+            existingWalk.RegionId = (Guid)updateWalksDTO.RegionId;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        await dbContext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == id);
+
+        return existingWalk;
+    }
+
+
+
+
 }
