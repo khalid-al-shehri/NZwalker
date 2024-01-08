@@ -17,6 +17,6 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
     }
 
     public async Task<List<Walks>?> GetAll(){
-        return await dbContext.Walks.ToListAsync();
+        return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
     }
 }
