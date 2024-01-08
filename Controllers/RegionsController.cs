@@ -7,7 +7,7 @@ using NZwalker.Models.Domain;
 using NZwalker.Models.DTO;
 using NZwalker.Repositories.IRepo;
 
-namespace NZwalker.Controller;
+namespace NZwalker.Controllers;
 
 [Route("api/[Controller]")]
 [ApiController]
