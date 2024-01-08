@@ -15,4 +15,8 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
 
         return walks;
     }
+
+    public async Task<List<Walks>?> GetAll(){
+        return await dbContext.Walks.ToListAsync();
+    }
 }
