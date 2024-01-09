@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NZwalker.CustomActionFilters;
 using NZwalker.Data;
 using NZwalker.Models.Domain;
 using NZwalker.Repositories.IRepo;
@@ -51,6 +52,7 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] AddRequestWalksDTO addWalksDTO)
     {
         // map Domain Model --> DTO
@@ -68,6 +70,7 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
     [Route("{id:Guid}")]
     [HttpPut]
+    [ValidateModel]
     public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateRequestWalksDTO updateRequestWalksDTO){
         Walks? updateExistingWalk = await walksRepository.Update(id, updateRequestWalksDTO);
 

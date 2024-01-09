@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NZwalker.CustomActionFilters;
 using NZwalker.Data;
 using NZwalker.Models.Domain;
 using NZwalker.Models.DTO;
@@ -53,14 +54,9 @@ public class RegionController(IRegionRepository regionRepository, IMapper mapper
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
     {
-
-        if(!ModelState.IsValid){
-            Console.WriteLine(ModelState);
-            return BadRequest(ModelState);
-        }
-
         // Map Dto --> Domain model
         Region regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
 
