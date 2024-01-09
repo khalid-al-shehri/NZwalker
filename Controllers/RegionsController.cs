@@ -55,6 +55,12 @@ public class RegionController(IRegionRepository regionRepository, IMapper mapper
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
     {
+
+        if(!ModelState.IsValid){
+            Console.WriteLine(ModelState);
+            return BadRequest(ModelState);
+        }
+
         // Map Dto --> Domain model
         Region regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
 
@@ -107,6 +113,5 @@ public class RegionController(IRegionRepository regionRepository, IMapper mapper
 
         return Ok(deleteRegionRequestDto);
     }
-
 
 }

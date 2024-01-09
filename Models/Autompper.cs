@@ -15,7 +15,8 @@ public class AutoMapperProfiles : Profile {
 
         // Walks
         CreateMap<Walks, WalksDTO>().ReverseMap();
-        CreateMap<Walks, AddWalksDTO>().ReverseMap();
+        CreateMap<Walks, AddRequestWalksDTO>().ReverseMap();
+        CreateMap<Walks, DeleteResponseWalksDTO>().ReverseMap();
     
     }
 }

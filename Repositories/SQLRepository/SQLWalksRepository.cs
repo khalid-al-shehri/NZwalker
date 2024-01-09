@@ -12,6 +12,7 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
     public async Task<Walks> Create(Walks walks){
         await dbContext.Walks.AddAsync(walks);
         await dbContext.SaveChangesAsync();
+        await dbContext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == walks.Id);
 
         return walks;
     }
@@ -24,27 +25,27 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
         return await dbContext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<Walks?> Update(Guid id, UpdateWalksDTO updateWalksDTO){
+    public async Task<Walks?> Update(Guid id, UpdateRequestWalksDTO updateRequestWalksDTO){
         Walks? existingWalk = await dbContext.Walks.FindAsync(id);
 
         if(existingWalk == null){
             return null;
         }
 
-        if(updateWalksDTO.Name != null){
-            existingWalk.Name = updateWalksDTO.Name;
+        if(updateRequestWalksDTO.Name != null){
+            existingWalk.Name = updateRequestWalksDTO.Name;
         }
-        if(updateWalksDTO.Description != null){
-            existingWalk.Description = updateWalksDTO.Description;
+        if(updateRequestWalksDTO.Description != null){
+            existingWalk.Description = updateRequestWalksDTO.Description;
         }
-        if(updateWalksDTO.WalkImageUrl != null){
-            existingWalk.WalkImageUrl = updateWalksDTO.WalkImageUrl;
+        if(updateRequestWalksDTO.WalkImageUrl != null){
+            existingWalk.WalkImageUrl = updateRequestWalksDTO.WalkImageUrl;
         }
-        if(updateWalksDTO.DifficultyId != null){
-            existingWalk.DifficultyId = (Guid)updateWalksDTO.DifficultyId;
+        if(updateRequestWalksDTO.DifficultyId != null){
+            existingWalk.DifficultyId = (Guid)updateRequestWalksDTO.DifficultyId;
         }
-        if(updateWalksDTO.RegionId != null){
-            existingWalk.RegionId = (Guid)updateWalksDTO.RegionId;
+        if(updateRequestWalksDTO.RegionId != null){
+            existingWalk.RegionId = (Guid)updateRequestWalksDTO.RegionId;
         }
 
         await dbContext.SaveChangesAsync();
@@ -55,6 +56,18 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
     }
 
 
+    public async Task<Walks?> Delete(Guid id){
+        
+        Walks? deleteWalk = dbContext.Walks.Find(id);
 
+        if(deleteWalk == null){
+            return null;
+        }
+
+        dbContext.Walks.Remove(deleteWalk);
+        await dbContext.SaveChangesAsync();
+
+        return deleteWalk;
+    } 
 
 }

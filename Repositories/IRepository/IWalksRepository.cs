@@ -9,6 +9,7 @@ public interface IWalksRepository{
     Task<List<Walks>?> GetAll();
     Task<Walks?> GetById(Guid id);
 
-    Task<Walks?> Update(Guid id, UpdateWalksDTO updateWalksDTO);
+    Task<Walks?> Update(Guid id, UpdateRequestWalksDTO updateRequestWalksDTO);
+    Task<Walks?> Delete(Guid id);
 
 }

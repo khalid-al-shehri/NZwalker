@@ -51,7 +51,7 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AddWalksDTO addWalksDTO)
+    public async Task<IActionResult> Create([FromBody] AddRequestWalksDTO addWalksDTO)
     {
         // map Domain Model --> DTO
         Walks walks = mapper.Map<Walks>(addWalksDTO);
@@ -68,8 +68,8 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
     [Route("{id:Guid}")]
     [HttpPut]
-    public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateWalksDTO updateWalksDTO){
-        Walks? updateExistingWalk = await walksRepository.Update(id, updateWalksDTO);
+    public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateRequestWalksDTO updateRequestWalksDTO){
+        Walks? updateExistingWalk = await walksRepository.Update(id, updateRequestWalksDTO);
 
         if(updateExistingWalk == null){
             return NotFound();
@@ -78,6 +78,21 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
         WalksDTO updatedWalkDTO = mapper.Map<WalksDTO>(updateExistingWalk);
 
         return Ok(updatedWalkDTO);
+
+    }
+
+    [Route("{id:Guid}")]
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromRoute] Guid id){
+        Walks? deleteExistingWalk = await walksRepository.Delete(id);
+
+        if(deleteExistingWalk == null){
+            return NotFound();
+        }
+
+        DeleteResponseWalksDTO response = mapper.Map<DeleteResponseWalksDTO>(deleteExistingWalk);
+
+        return Ok(response);
 
     }
 }

@@ -1,7 +1,7 @@
 
 namespace NZwalker.Models.Domain;
 
-public class AddWalksDTO{
+public class AddRequestWalksDTO{
     public required string Name { get; set; }
     public required string Description { get; set; }
     public string? WalkImageUrl { get; set; }
