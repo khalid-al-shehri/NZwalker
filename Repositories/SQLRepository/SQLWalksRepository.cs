@@ -17,8 +17,40 @@ public class SQLWalksRepository(NZWalksDbContext dbContext) : IWalksRepository
         return walks;
     }
 
-    public async Task<List<Walks>?> GetAll(){
-        return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+    public async Task<List<Walks>?> GetAll(
+        string? param, 
+        string? value, 
+        string? sortBy, 
+        int? skip,
+        int? offset,  
+        bool isAscending = true
+    ){
+
+        var walks = dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+        // Filtering
+        if(!string.IsNullOrWhiteSpace(param) && !string.IsNullOrWhiteSpace(value)){
+            if(param.Trim().Equals("Name", StringComparison.OrdinalIgnoreCase)){
+                walks = walks.Where(x => x.Name.Contains(value));
+            }
+        }
+
+        // Sorting
+        if(!string.IsNullOrWhiteSpace(sortBy)){
+            if(sortBy.Trim().Equals("Name", StringComparison.OrdinalIgnoreCase)){
+                walks = isAscending ? walks.OrderBy(x => x.Name) : walks.OrderByDescending(x => x.Name);
+            }
+            else if(sortBy.Trim().Equals("LengthInKm", StringComparison.OrdinalIgnoreCase)){
+                walks = isAscending ? walks.OrderBy(x => x.LengthInKm) : walks.OrderByDescending(x => x.LengthInKm);
+            }
+        }
+
+        //Pagination 
+        if(skip != null && offset != null){
+            walks = walks.Skip((int)skip).Take((int)offset);
+        }
+
+        return await walks.ToListAsync();
     }
     
     public async Task<Walks?> GetById(Guid id){

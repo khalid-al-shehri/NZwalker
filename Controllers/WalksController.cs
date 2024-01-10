@@ -18,11 +18,26 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
     private readonly IMapper mapper = mapper;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] string? param, 
+        [FromQuery] string? value,
+        [FromQuery] string? sortBy, 
+        [FromQuery] bool? isAscending,
+        [FromQuery] int? skip,
+        [FromQuery] int? offset
+    )
     {
-        List<Walks>? walks = await walksRepository.GetAll();
+        List<Walks>? walks = await walksRepository.GetAll(
+            param,
+            value,
+            sortBy,
+            skip,
+            offset,
+            isAscending ?? true
+        );
 
-        if(walks == null){
+        if (walks == null)
+        {
             return NotFound();
         }
 
@@ -39,7 +54,8 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
     {
         Walks? WalksById = await walksRepository.GetById(id);
 
-        if(WalksById == null){
+        if (WalksById == null)
+        {
             return NotFound();
         }
 
@@ -71,10 +87,12 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
     [Route("{id:Guid}")]
     [HttpPut]
     [ValidateModel]
-    public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateRequestWalksDTO updateRequestWalksDTO){
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRequestWalksDTO updateRequestWalksDTO)
+    {
         Walks? updateExistingWalk = await walksRepository.Update(id, updateRequestWalksDTO);
 
-        if(updateExistingWalk == null){
+        if (updateExistingWalk == null)
+        {
             return NotFound();
         }
 
@@ -86,10 +104,12 @@ public class WalksController(IWalksRepository walksRepository, IMapper mapper) :
 
     [Route("{id:Guid}")]
     [HttpDelete]
-    public async Task<IActionResult> Delete([FromRoute] Guid id){
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
         Walks? deleteExistingWalk = await walksRepository.Delete(id);
 
-        if(deleteExistingWalk == null){
+        if (deleteExistingWalk == null)
+        {
             return NotFound();
         }
 

@@ -13,6 +13,8 @@ public class AddRequestWalksDTO{
     [MaxLength(150)]
     public required string Description { get; set; }
     public string? WalkImageUrl { get; set; }
+    public double LengthInKm { get; set; }
+    
 
     public Guid DifficultyId { get; set; }
     public Guid RegionId { get; set; }
