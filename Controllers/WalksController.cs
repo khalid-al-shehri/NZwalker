@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using NZwalker.CustomActionFilters;
 using NZwalker.Data;
 using NZwalker.Models.Domain;
-using NZwalker.Repositories.IRepo;
+using NZwalker.Repositories.InterfaceRepo;
 
 namespace NZwalker.Controllers;
 

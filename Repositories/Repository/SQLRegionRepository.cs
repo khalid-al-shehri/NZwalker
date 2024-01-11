@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using NZwalker.Data;
 using NZwalker.Models.Domain;
-using NZwalker.Repositories.IRepo;
+using NZwalker.Repositories.InterfaceRepo;
 
-namespace NZwalker.Repositories.SQLRepo;
+namespace NZwalker.Repositories.Repo;
 
 public class SQLRegionRepository(NZWalksDbContext dbContext) : IRegionRepository
 {

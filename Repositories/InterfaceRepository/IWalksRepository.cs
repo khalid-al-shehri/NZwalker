@@ -1,7 +1,7 @@
 
 using NZwalker.Models.Domain;
 
-namespace NZwalker.Repositories.IRepo;
+namespace NZwalker.Repositories.InterfaceRepo;
 
 public interface IWalksRepository{
 

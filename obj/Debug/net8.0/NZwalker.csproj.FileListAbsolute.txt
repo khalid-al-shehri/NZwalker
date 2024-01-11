@@ -138,3 +138,12 @@
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/obj/Debug/net8.0/ref/NZwalker.dll
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/AutoMapper.dll
 /Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/JWT.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.AspNetCore.Cryptography.Internal.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.Extensions.Identity.Core.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.Extensions.Identity.Stores.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
+/Users/khalid/Desktop/work/learnning-dotnet/NZwalker/bin/Debug/net8.0/Newtonsoft.Json.dll
