@@ -16,6 +16,7 @@ public class NZWalksDbContext : DbContext
     public DbSet<Region> Regions { get; set; }
 
     public DbSet<Walks> Walks { get; set; }
+    public DbSet<Image> Image { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

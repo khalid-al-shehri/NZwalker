@@ -8,52 +8,52 @@ using NZwalker.Models.AutoMapper;
 using NZwalker.Repositories.InterfaceRepo;
 using NZwalker.Repositories.Repo;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using Serilog;
+using NZwalker.Middleware;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Web_API_Versioning;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Logging 
+
+var logger = new LoggerConfiguration()
+.WriteTo.Console()
+.WriteTo.File(
+    "Log/NzWalks_log.txt", 
+    rollingInterval: RollingInterval.Minute
+)
+.MinimumLevel.Warning()
+.CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
+// Add services to the container
 
 builder.Services.AddControllers();
+
+builder.Services.AddApiVersioning(options => {
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1,0);
+    options.ReportApiVersions = true;
+});
+
+builder.Services.AddVersionedApiExplorer(options => {
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.AddHttpContextAccessor();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(options => {
-    options.SwaggerDoc(
-        "v1", 
-        new OpenApiInfo {
-            Title = "NZ walks API",
-            Version = "v1"
-        }
-    );
+builder.Services.AddSwaggerGen();
 
-    options.AddSecurityDefinition(
-        JwtBearerDefaults.AuthenticationScheme,
-        new OpenApiSecurityScheme{
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = JwtBearerDefaults.AuthenticationScheme
-        }
-    );
-
-    options.AddSecurityRequirement(
-        new OpenApiSecurityRequirement{
-            {
-                new OpenApiSecurityScheme{
-                    Reference = new OpenApiReference{
-                        Type = ReferenceType.SecurityScheme,
-                        Id = JwtBearerDefaults.AuthenticationScheme
-                    },
-                    Scheme = "Oauth2",
-                    Name = JwtBearerDefaults.AuthenticationScheme,
-                    In = ParameterLocation.Header,
-                },
-                new List<string>()
-            }
-        }
-    );
-
-});
+builder.Services.ConfigureOptions<ConfigurationSwaggerOptions>();
 
 builder.Services.AddDbContext<NZWalksDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksConnectionString"))
@@ -70,6 +70,8 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddScoped<IWalksRepository, SQLWalksRepository>();
 
 builder.Services.AddScoped<IAuthRepository, TokenRepository>();
+
+builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 
 builder.Services.AddIdentityCore<IdentityUser>()
 .AddRoles<IdentityRole>()
@@ -104,18 +106,40 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+var versionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => {
+        foreach (var descriptions in versionDescriptionProvider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint(
+                $"/swagger/{descriptions.GroupName}/swagger.json", 
+                descriptions.GroupName.ToUpperInvariant()
+            );
+        }
+    });
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Images"
+        )
+    ),
+    RequestPath = "/Images"
+});
 
 app.MapControllers();
 

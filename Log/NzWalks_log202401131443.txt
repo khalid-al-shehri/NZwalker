@@ -1,0 +1,2 @@
+2024-01-13 14:43:17.851 +03:00 [WRN] Message LogWarning
+2024-01-13 14:43:17.854 +03:00 [ERR] Message LogError

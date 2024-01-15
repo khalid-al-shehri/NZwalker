@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,24 +12,51 @@ using NZwalker.Repositories.InterfaceRepo;
 
 namespace NZwalker.Controllers;
 
-[Route("api/[Controller]")]
+[Route("api/v{version:apiVersion}/[Controller]")]
 [ApiController]
+[ApiVersion("1.0")]
+[ApiVersion("2.0")]
 
-public class RegionController(IRegionRepository regionRepository, IMapper mapper) : ControllerBase
+public class RegionController(
+    IRegionRepository regionRepository, 
+    IMapper mapper, 
+    ILogger<RegionController> logger
+) : ControllerBase
 {
 
     private readonly IRegionRepository regionRepository = regionRepository;
     private readonly IMapper mapper = mapper;
+    private readonly ILogger<RegionController> logger = logger;
 
+    [MapToApiVersion("1.0")]
     [HttpGet]
-    [Authorize(Roles = "Reader")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllV1()
     {
         // Get data from Database - Domain Model
         var regionsDomain = await regionRepository.GetAllAsync();
-
+        
+        logger.LogInformation($"Finished of GetAll Regions with Data : {JsonSerializer.Serialize(regionsDomain)}");
         // Map Domain model to DTO
         List<RegionDto> regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
+
+        // Return DTO
+        return Ok(regionsDto);
+    }
+
+
+    [MapToApiVersion("2.0")]
+    [HttpGet]
+    public IActionResult GetAllV2()
+    {
+        List<RegionDto> regionsDto = [];
+        regionsDto.Add(
+            new RegionDto{
+                Id = Guid.NewGuid(),
+                Code = "Version 2",
+                Name = "Version 2",
+                RegionImageUrl = "Version 2"
+            }
+        );
 
         // Return DTO
         return Ok(regionsDto);

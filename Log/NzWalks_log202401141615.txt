@@ -1,0 +1,6 @@
+2024-01-14 16:15:23.559 +03:00 [WRN] Message LogWarning
+2024-01-14 16:15:23.562 +03:00 [ERR] Message LogError
+2024-01-14 16:15:42.239 +03:00 [WRN] Message LogWarning
+2024-01-14 16:15:42.240 +03:00 [ERR] Message LogError
+2024-01-14 16:15:48.642 +03:00 [WRN] Message LogWarning
+2024-01-14 16:15:48.643 +03:00 [ERR] Message LogError

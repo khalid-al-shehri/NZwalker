@@ -1,2 +1,0 @@
-
-namespace NZwalker.Models.Domain;

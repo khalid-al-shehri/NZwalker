@@ -17,6 +17,9 @@ public class AutoMapperProfiles : Profile {
         CreateMap<Walks, WalksDTO>().ReverseMap();
         CreateMap<Walks, AddRequestWalksDTO>().ReverseMap();
         CreateMap<Walks, DeleteResponseWalksDTO>().ReverseMap();
+
+        // Image
+        CreateMap<Image, ImagesUploadRequestDTO>().ReverseMap();
     
     }
 }
